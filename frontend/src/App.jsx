@@ -5,7 +5,7 @@ import Homepage from "./pages/Homepage";
 import HotelDetails from "./pages/HotelDetails";
 import Footer from "./components/Footer";
 
-export const backendUrl = "http://localhost:7000"; 
+export const backendUrl = "https://mern-hotel-booking-backend-lrbn.onrender.com/"; 
 
 const App = () => {
   return (
