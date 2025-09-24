@@ -7,7 +7,7 @@ import ListHotel from "./pages/ListHotel";
 import Reservation from "./pages/Reservation";
 import {ToastContainer} from "react-toastify"
 
-export const backendUrl = "https://mern-hotel-booking-backend-lrbn.onrender.com/";
+export const backendUrl = "https://mern-hotel-booking-backend-lrbn.onrender.com";
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
