@@ -154,9 +154,8 @@
 
 
 
-
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   FaUtensils,
   FaWifi,
@@ -164,16 +163,20 @@ import {
   FaSwimmingPool,
   FaConciergeBell,
 } from "react-icons/fa";
-import { backendUrl } from "../App";
 import axios from "axios";
+
+// ✅ Use .env for backend URL
+const backendUrl = import.meta.env.VITE_API_URL;
 
 const HotelDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // ✅ Single room state
   const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Booking form state (all fields in one object)
+  // ✅ Booking form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -199,7 +202,9 @@ const HotelDetails = () => {
           roomId: response.data.hotel._id,
         }));
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching room details:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchRoomDetails();
@@ -209,14 +214,25 @@ const HotelDetails = () => {
   const handleReservation = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${backendUrl}/api/reservations/create`, formData);
+      const res = await axios.post(
+        `${backendUrl}/api/reservations/create`,
+        formData
+      );
       console.log("Reservation successful:", res.data);
-      alert("Reservation successful!");
+      alert("🎉 Reservation successful!");
+      navigate("/reservation-confirmation");
     } catch (error) {
-      console.error("Reservation failed:", error);
-      alert("Reservation failed. Please try again.");
+      console.error(
+        "Reservation failed:",
+        error.response?.data || error.message
+      );
+      alert(error.response?.data?.message || "Reservation failed. Please try again.");
     }
   };
+
+  if (loading) {
+    return <p className="text-center mt-40">Loading room details...</p>;
+  }
 
   return (
     <div className="mx-auto max-w-7xl p-6 grid grid-cols-1 md:grid-cols-3 gap-8 mt-40 md:mt-30">
@@ -229,7 +245,7 @@ const HotelDetails = () => {
               <p className="text-xl text-lime-500 mt-1">${room.price}</p>
             </div>
             <img
-              src={room.image}
+              src={room.image || "/placeholder.jpg"}
               alt={room.name}
               className="w-full rounded-lg shadow-md"
             />
@@ -259,7 +275,7 @@ const HotelDetails = () => {
             </div>
           </>
         ) : (
-          <p>Loading room details...</p>
+          <p>No room details found.</p>
         )}
       </div>
 
@@ -271,13 +287,17 @@ const HotelDetails = () => {
             type="text"
             placeholder="Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
             className="w-full border border-gray-300 p-3 rounded-lg outline-none"
           />
           <input
             type="email"
             placeholder="Email"
             value={formData.email}
+            required
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
@@ -287,8 +307,9 @@ const HotelDetails = () => {
             type="tel"
             placeholder="Phone Number"
             value={formData.phone}
+            required
             onChange={(e) =>
-              setFormData({ ...formData, phone: Number(e.target.value) })
+              setFormData({ ...formData, phone: e.target.value })
             }
             className="w-full border border-gray-300 p-3 rounded-lg outline-none"
           />
@@ -300,8 +321,9 @@ const HotelDetails = () => {
               type="date"
               id="checkIn"
               value={formData.checkIn}
+              required
               onChange={(e) =>
-                setFormData({ ...formData, checkIn: Number(e.target.value) })
+                setFormData({ ...formData, checkIn: e.target.value })
               }
               className="w-full border border-gray-300 p-3 rounded-lg outline-none"
             />
@@ -315,8 +337,9 @@ const HotelDetails = () => {
               type="date"
               id="checkOut"
               value={formData.checkOut}
+              required
               onChange={(e) =>
-                setFormData({ ...formData, checkOut: Number(e.target.value )})
+                setFormData({ ...formData, checkOut: e.target.value })
               }
               className="w-full border border-gray-300 p-3 rounded-lg outline-none"
             />
@@ -329,11 +352,11 @@ const HotelDetails = () => {
               id="guests"
               value={formData.guests}
               onChange={(e) =>
-                setFormData({ ...formData, guests: Number(e.target.value )})
+                setFormData({ ...formData, guests: Number(e.target.value) })
               }
               className="w-full p-3 mb-3 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
             >
-              {[...Array(3).keys()].map((i) => (
+              {[...Array(5).keys()].map((i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1} Guest(s)
                 </option>
