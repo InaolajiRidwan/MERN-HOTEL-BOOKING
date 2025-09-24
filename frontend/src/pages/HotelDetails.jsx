@@ -152,6 +152,9 @@
 
 // export default HotelDetails;
 
+
+
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -285,7 +288,7 @@ const HotelDetails = () => {
             placeholder="Phone Number"
             value={formData.phone}
             onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
+              setFormData({ ...formData, phone: Number(e.target.value) })
             }
             className="w-full border border-gray-300 p-3 rounded-lg outline-none"
           />
@@ -298,7 +301,7 @@ const HotelDetails = () => {
               id="checkIn"
               value={formData.checkIn}
               onChange={(e) =>
-                setFormData({ ...formData, checkIn: e.target.value })
+                setFormData({ ...formData, checkIn: Number(e.target.value) })
               }
               className="w-full border border-gray-300 p-3 rounded-lg outline-none"
             />
@@ -313,7 +316,7 @@ const HotelDetails = () => {
               id="checkOut"
               value={formData.checkOut}
               onChange={(e) =>
-                setFormData({ ...formData, checkOut: e.target.value })
+                setFormData({ ...formData, checkOut: Number(e.target.value )})
               }
               className="w-full border border-gray-300 p-3 rounded-lg outline-none"
             />
@@ -326,7 +329,7 @@ const HotelDetails = () => {
               id="guests"
               value={formData.guests}
               onChange={(e) =>
-                setFormData({ ...formData, guests: e.target.value })
+                setFormData({ ...formData, guests: Number(e.target.value )})
               }
               className="w-full p-3 mb-3 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
             >
